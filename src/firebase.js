@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 // Vite exposes only variables prefixed with VITE_ to browser code.
 const firebaseConfig = {
@@ -21,3 +22,4 @@ if (missingConfig.length > 0) {
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
+export const db = getFirestore(app);

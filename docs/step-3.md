@@ -6,7 +6,7 @@ Post guestbook notes and display new notes as they arrive.
 
 ## Code to add
 
-Use the `messages` collection. Each document stores `text`, `uid`, `displayName`, `photoURL`, and `createdAt` (a server timestamp). Use `addDoc` to post, `onSnapshot` to listen for messages ordered newest first, and `deleteDoc` for a delete button shown only on the current user's notes.
+Use the `messages` collection. Each document stores `text`, `uid`, `displayName`, `photoURL`, and `createdAt` (a server timestamp). Use `addDoc` to post, `onSnapshot` to listen for messages ordered newest first, and `deleteDoc` for a delete button shown only on the current user's notes. Render message text with `textContent` so a note is treated as plain text.
 
 ## Expected result
 
