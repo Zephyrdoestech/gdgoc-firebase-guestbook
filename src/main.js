@@ -1,18 +1,44 @@
 import './style.css';
-import './firebase.js';
+import { auth } from './firebase.js';
+import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup, signOut } from 'firebase/auth';
 
 const signedOutView = document.querySelector('#signed-out-view');
 const signedInView = document.querySelector('#signed-in-view');
 const messageInput = document.querySelector('#message-input');
 const characterCount = document.querySelector('#character-count');
+const statusMessage = document.querySelector('#status-message');
 
-// TODO Step 2: connect Google sign-in, sign-out, and auth state.
 // TODO Step 3: connect Firestore, live messages, posting, and owner-only delete.
-document.querySelector('#sign-in-button').addEventListener('click', () => {
-  showStatus('Add Firebase Authentication in step 2 to enable sign-in.');
+const googleProvider = new GoogleAuthProvider();
+
+document.querySelector('#sign-in-button').addEventListener('click', async () => {
+  try {
+    await signInWithPopup(auth, googleProvider);
+    showStatus('You are signed in.');
+  } catch (error) {
+    showStatus(error.message || 'Google sign-in did not complete. Please try again.');
+  }
 });
-document.querySelector('#sign-out-button').addEventListener('click', () => {
-  showStatus('Add Firebase Authentication in step 2 to enable sign-out.');
+
+document.querySelector('#sign-out-button').addEventListener('click', async () => {
+  try {
+    await signOut(auth);
+    showStatus('You are signed out.');
+  } catch (error) {
+    showStatus(error.message || 'Sign-out did not complete. Please try again.');
+  }
+});
+
+onAuthStateChanged(auth, (user) => {
+  signedOutView.hidden = Boolean(user);
+  signedInView.hidden = !user;
+  if (!user) return;
+
+  document.querySelector('#user-name').textContent = user.displayName || 'Google user';
+  const photo = document.querySelector('#user-photo');
+  photo.src = user.photoURL || '';
+  photo.hidden = !user.photoURL;
+  photo.alt = user.displayName ? `${user.displayName}'s profile photo` : 'Profile photo';
 });
 
 document.querySelector('#message-form').addEventListener('submit', (event) => {
@@ -24,10 +50,6 @@ messageInput.addEventListener('input', () => {
   characterCount.textContent = `${messageInput.value.length} / 280`;
 });
 
-// These references make the two auth views easy to wire up in step 2.
-void signedOutView;
-void signedInView;
-
 function showStatus(message) {
-  document.querySelector('#status-message').textContent = message;
+  statusMessage.textContent = message;
 }
