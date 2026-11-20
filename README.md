@@ -50,7 +50,7 @@ Open the local URL printed by Vite, usually `http://localhost:5173`.
 
 ## Follow the build steps
 
-Each step has a short guide in `docs/` and a matching Git tag.
+Each step has a detailed, numbered walkthrough in `docs/` and a matching Git tag. Start with [step 1](docs/step-1.md), complete its checkpoint, then continue in order. The guides explain both the Firebase Console actions and the code to add.
 
 1. [Setup](docs/step-1.md): Vite and Firebase configuration.
 2. [Authentication](docs/step-2.md): Google sign-in and sign-out.
