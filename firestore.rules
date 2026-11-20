@@ -1,0 +1,26 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /messages/{messageId} {
+      allow read: if request.auth != null;
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasOnly([
+          'text', 'uid', 'displayName', 'photoURL', 'createdAt'
+        ])
+        && request.resource.data.keys().hasAll([
+          'text', 'uid', 'displayName', 'photoURL', 'createdAt'
+        ])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.text is string
+        && request.resource.data.text.size() > 0
+        && request.resource.data.text.size() <= 280
+        && request.resource.data.displayName is string
+        && request.resource.data.photoURL is string
+        && request.resource.data.createdAt == request.time;
+
+      allow delete: if request.auth != null
+        && resource.data.uid == request.auth.uid;
+    }
+  }
+}
