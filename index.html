@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4f7fb" />
+    <meta name="description" content="A small Firebase guestbook for the GDGoC CIT-U webinar." />
+    <title>Campus Guestbook | GDGoC CIT-U</title>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="Campus Guestbook home">
+          <span class="brand-mark" aria-hidden="true">G</span>
+          <span>GDGoC <strong>CIT-U</strong></span>
+        </a>
+        <span class="topbar-note">Webinar demo · Firebase</span>
+      </header>
+
+      <main id="top" class="layout">
+        <section class="intro" aria-labelledby="page-title">
+          <p class="eyebrow"><span class="live-dot"></span> Beyond the Search Bar</p>
+          <h1 id="page-title">A little hello<br />from <span>campus.</span></h1>
+          <p class="intro-copy">A shared guestbook for the curious, the builders, and everyone just getting started.</p>
+          <div class="event-card">
+            <div class="event-icon" aria-hidden="true">✦</div>
+            <div><strong>Getting Started with Google Technologies</strong><span>30-minute live session</span></div>
+          </div>
+          <div class="intro-footer"><span class="avatar-stack" aria-hidden="true"><i>G</i><i>✦</i><i>+</i></span><span>Made for the CIT-U community</span></div>
+        </section>
+
+        <section class="guestbook" aria-labelledby="guestbook-title">
+          <div class="panel-heading">
+            <div><p class="eyebrow">THE COMMUNITY WALL</p><h2 id="guestbook-title">Leave a note</h2></div>
+            <span class="count-pill"><span class="live-dot"></span><span id="message-count">0 notes</span></span>
+          </div>
+
+          <div id="signed-out-view" class="sign-in-card">
+            <div class="sign-in-art" aria-hidden="true"><span class="spark spark-one">✳</span><span class="art-note">Hello,<br />future<br />builder<span>.</span></span><span class="spark spark-two">✦</span></div>
+            <div class="sign-in-content"><p class="eyebrow">YOUR TURN</p><h3>Join the conversation</h3><p>Sign in with Google to share what you’re learning, building, or curious about.</p><button id="sign-in-button" class="google-button" type="button"><span class="google-g" aria-hidden="true">G</span>Continue with Google</button><small>Only your name and profile photo will be shown.</small></div>
+          </div>
+
+          <div id="signed-in-view" class="composer-card" hidden>
+            <div class="user-row"><img id="user-photo" class="user-photo" alt="" /><div class="user-copy"><strong id="user-name">Your name</strong><span>Posting to the community wall</span></div><button id="sign-out-button" class="text-button" type="button">Sign out</button></div>
+            <form id="message-form">
+              <label class="sr-only" for="message-input">Your message</label>
+              <textarea id="message-input" name="message" rows="3" maxlength="280" placeholder="What’s on your mind? Share a thought, a question, or a small win..." required></textarea>
+              <div class="composer-footer"><span id="character-count">0 / 280</span><button class="primary-button" type="submit">Post note <span aria-hidden="true">↗</span></button></div>
+            </form>
+          </div>
+
+          <div class="messages-heading"><h3>From the community</h3><span>Newest first</span></div>
+          <div id="message-list" class="message-list" aria-live="polite">
+            <div id="empty-state" class="empty-state"><span class="empty-icon" aria-hidden="true">✎</span><strong>Your community starts here.</strong><span>Sign in and leave the first note.</span></div>
+          </div>
+          <p id="status-message" class="status-message" role="status" aria-live="polite"></p>
+        </section>
+      </main>
+
+      <footer class="site-footer"><span>Built with curiosity <span aria-hidden="true">✦</span></span><span>GDGoC CIT-U · Cebu Institute of Technology – University</span></footer>
+    </div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
