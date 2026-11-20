@@ -73,7 +73,7 @@ npm run build
 firebase deploy
 ```
 
-During `firebase init hosting`, select the Firebase project you created, set the public directory to `dist`, configure as a single-page app only if your app uses client-side routes (this guestbook does not), and do not overwrite existing files. The included `firebase.json` already defines the `dist` directory and clean URLs; review the prompts and retain the included configuration. Deploy Firestore rules separately from the Firebase Console unless you also initialize Firestore with the CLI.
+During `firebase init hosting`, select the Firebase project you created, set the public directory to `dist`, configure as a single-page app only if your app uses client-side routes (this guestbook does not), and do not overwrite existing files. The included `firebase.json` already defines the `dist` directory and clean URLs; retain it if the CLI offers to overwrite it. Deploy Firestore rules separately from the Firebase Console unless you also initialize Firestore with the CLI.
 
 The Firebase CLI works in PowerShell and macOS/Linux shells. If it is not installed, install it with `npm install -g firebase-tools` in either shell, then run `firebase login`.
 
