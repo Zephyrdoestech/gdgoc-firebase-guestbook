@@ -6,7 +6,7 @@ Run the guestbook locally with Vite and load Firebase configuration from environ
 
 ## Code to add
 
-Install the dependencies and create `.env` from `.env.example`. In `src/firebase.js`, initialize Firebase using `import.meta.env.VITE_FIREBASE_*` values. Do not place real values in source code or commit `.env`.
+Install the dependencies and create `.env` from `.env.example`. In `src/firebase.js`, initialize Firebase using `import.meta.env.VITE_FIREBASE_*` values. The app reports which config values are missing. Do not place real values in source code or commit `.env`.
 
 ## Expected result
 

@@ -1,4 +1,5 @@
 import './style.css';
+import './firebase.js';
 
 const signedOutView = document.querySelector('#signed-out-view');
 const signedInView = document.querySelector('#signed-in-view');
