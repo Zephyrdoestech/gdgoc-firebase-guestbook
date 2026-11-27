@@ -4,11 +4,13 @@
 
 ## Goal
 
-Make Firestore check every request. A hidden delete button is not security because someone can send a request without using the page.
+Publish Cloud Firestore security rules so the database itself checks every request — allowing signed-in reads, validated note creation, and owner-only deletes. *(Hiding a Delete button in JavaScript is only UI convenience; real security lives in Firestore rules.)*
 
-## Part A: Add the rules file
+---
 
-At the project root, create or replace `firestore.rules` with:
+## Part A: Save the rules in your project (`firestore.rules`)
+
+In the **project root** (next to `package.json`), create a new file named `firestore.rules` and paste:
 
 ```text
 rules_version = '2';
@@ -39,32 +41,55 @@ service cloud.firestore {
 }
 ```
 
-There is deliberately no `allow update` rule. Firestore denies any operation that is not explicitly allowed.
+Save `firestore.rules`.
+
+> **Why keep a local `firestore.rules` file?** Saving it in your repository keeps your rules version-controlled and easy to copy. It does **not** protect your live database until you publish it in Part B below.
+
+---
 
 ## Part B: Publish the rules in Firebase Console
 
 1. Open your project in [Firebase Console](https://console.firebase.google.com/).
-2. Open **Firestore Database**.
-3. Select the **Rules** tab.
-4. Select all the sample rules shown in the editor and replace them with the contents of your local `firestore.rules` file.
-5. Select **Publish** and wait for the success message.
+2. In the left sidebar, open **Build → Firestore Database**.
+3. Click the **Rules** tab at the top.
+4. Click inside the rules editor, select everything (**`Ctrl+A`** on Windows / **`Cmd+A`** on macOS), and delete the default rules.
+5. Copy the entire contents of your local `firestore.rules` file and paste it into the Console editor.
+6. Click **Publish** and wait for the confirmation banner.
 
-The local file does not protect a database until it has been published. This guide deploys rules from the Console; the Hosting command in step 5 does not publish Firestore rules.
+> **Propagation delay:** Newly published Firestore rules can take **10–60 seconds** to take effect. If you still see a permission error immediately after clicking Publish, wait 30 seconds and refresh your browser.
+
+---
 
 ## Part C: Understand each permission
 
-- **Read:** a visitor must be signed in. This covers reading one message or listing the collection.
-- **Create:** the visitor must be signed in, the document must contain exactly the expected fields, the UID must match, the text must be 1 to 280 characters, and the timestamp must be server time.
-- **Delete:** the visitor must be signed in and the existing document's UID must match.
-- **Update:** no rule allows it, so it is denied.
+- **Read (`allow read`):** The visitor must be signed in (`request.auth != null`). This covers reading a single note or listening to the whole collection.
+- **Create (`allow create`):** The visitor must be signed in, the document must contain **only and all 5** expected fields, `uid` must match the signed-in user (`request.auth.uid`), `text` must be a non-empty string of 1–280 characters, `displayName` and `photoURL` must be strings, and `createdAt` must be Firestore server time (`request.time`).
+- **Delete (`allow delete`):** The visitor must be signed in **and** the stored document's `uid` (`resource.data.uid`) must match their own UID (`request.auth.uid`).
+- **Update:** Deliberately omitted — Firestore denies any operation that is not explicitly allowed.
 
-`request.resource.data` is the new document being created. `resource.data` is the document already stored in Firestore. Rules use `request.auth.uid` as the signed-in person's Firebase UID.
+---
 
-## Checkpoint
+## Checkpoint (Full End-to-End Test)
 
-1. Refresh the guestbook and sign in. Your messages should load.
-2. Post a new note. It should save and appear in the list.
-3. With a second account, confirm you can read the first person's message but cannot delete it.
-4. Sign out. The page should no longer read messages.
+1. Refresh `http://localhost:5173` and sign in with Google. The Step 3 permission message should disappear and the wall should load cleanly.
+2. Type a short note and click **Post note**.
+   - Confirm the status says `Your note was posted.`
+   - Confirm your note appears **immediately** without refreshing, complete with your name, profile photo, timestamp, and a **Delete** button.
+3. **Test live updates and owner-only delete with a second account:**
+   - Open an **Incognito / Private browser window** and go to `http://localhost:5173`.
+   - Sign in with a **different** Google account.
+   - Confirm you can see the first account's note, with **no Delete button** beside it.
+   - Post a note from the second account and watch it appear **live** in the first browser window!
+4. Return to your first browser window and click **Delete** on your own note. Confirm it disappears from **both** windows.
+5. Click **Sign out** and confirm the notes clear from the screen.
 
-If you get `permission-denied`, check that you published the rules to the same Firebase project as the values in `.env`.
+### If something goes wrong
+
+- **Still seeing `permission-denied` after publishing:**
+  1. Wait 30–60 seconds and hard-refresh (**`Ctrl+Shift+R`** / **`Cmd+Shift+R`**).
+  2. Double-check in Firebase Console that you published rules to the **same Firebase project** whose `projectId` is in your `.env` file.
+  3. Confirm you did not leave the default `allow read, write: if false;` block in the **Rules** tab.
+- **Reads work, but posting gives `permission-denied`:**
+  Check that `postMessage()` in `src/main.js` sends all 5 exact field names (`text`, `uid`, `displayName`, `photoURL`, `createdAt: serverTimestamp()`) and that `text` is 1–280 characters.
+
+Once posting, live updates, and owner-only delete all work, continue to **[Step 5: Publish with Firebase Hosting](step-5.md)**.
